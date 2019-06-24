@@ -155,6 +155,8 @@ export default {
       })
         .then(res => {
           // 登录成功  200<= 的状态会进入这里 <=400
+          const userInfo = res.data.data
+          window.localStorage.setItem('user_info', JSON.stringify(userInfo))
           this.$message({
             message: '登录成功',
             type: 'success'

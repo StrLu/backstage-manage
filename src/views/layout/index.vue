@@ -38,15 +38,15 @@ export default {
   height: 100%;
 }
 .el-aside {
-  background-color: #343a46;
+  background-color: #2f4050;
 }
 .el-aside::-webkit-scrollbar {
   width: 0;
 }
 .el-header {
-  background-color: #aec0d1;
+  background-color: #f3f3f4;
 }
 .el-main {
-  background-color: #e8eff4;
+  background-color: #fff;
 }
 </style>

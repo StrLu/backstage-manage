@@ -12,9 +12,9 @@
   -->
   <el-menu
     default-active="2"
-    background-color="#545c64"
-    text-color="#fff"
-    active-text-color="#ffd04b"
+    background-color="#2f4050"
+    text-color="#a7b1c2"
+    active-text-color="#fff"
     :router="true"
   >
     <el-menu-item index="/">
