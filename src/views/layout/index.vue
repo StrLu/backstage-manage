@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside width="200px">
+    <el-aside width="220px">
       <!-- 侧边栏 -->
       <AppAside/>
     </el-aside>
@@ -37,6 +37,9 @@ export default {
 }
 .el-aside {
   background-color: #343a46;
+}
+.el-aside::-webkit-scrollbar {
+  width: 0;
 }
 .el-header {
   background-color: #aec0d1;
