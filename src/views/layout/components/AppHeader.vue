@@ -13,7 +13,7 @@
 
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>用户设置</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -29,6 +29,27 @@ export default {
   },
   created () {
     this.userinfo = JSON.parse(window.localStorage.getItem('user_info'))
+  },
+  methods: {
+    logout () {
+      this.$confirm('确认退出登录？, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '成功退出!'
+        })
+        window.localStorage.removeItem('user_info')
+        window.location.reload()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        })
+      })
+    }
   }
 }
 </script>
