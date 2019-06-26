@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { getUser, removeUser } from '@/utils/auth'
 export default {
   data () {
     return {
@@ -28,7 +29,7 @@ export default {
     }
   },
   created () {
-    this.userinfo = JSON.parse(window.localStorage.getItem('user_info'))
+    this.userinfo = getUser()
   },
   methods: {
     logout () {
@@ -41,7 +42,7 @@ export default {
           type: 'success',
           message: '成功退出!'
         })
-        window.localStorage.removeItem('user_info')
+        removeUser()
         window.location.reload()
       }).catch(() => {
         this.$message({

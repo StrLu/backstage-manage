@@ -14,7 +14,7 @@
           </el-col>
           <el-col :offset="2" :span="11">
             <el-button
-              :disabled="!!codeTimer"
+              :disabled="flag"
               @click="handleSendCode"
             >{{ codeTimer ? `${codeTimerSeconds}秒后重试`:'获取验证码' }}</el-button>
           </el-col>
@@ -28,7 +28,7 @@
           </span>
         </el-form-item>
         <el-form-item>
-          <el-button class="loginbtn" type="primary" @click="handleLogin">立即登录</el-button>
+          <el-button class="loginbtn" :disabled="loginFlag" type="primary" @click="handleLogin">立即登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -37,7 +37,10 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt.js'
-const initCodeTimeSecond = 5
+import { saveUser } from '@/utils/auth'
+import initGeetest from '@/utils/initGeetest'
+
+const initCodeTimeSecond = 60
 
 export default {
   data () {
@@ -69,7 +72,9 @@ export default {
         ]
       },
       codeTimer: null,
-      codeTimerSeconds: initCodeTimeSecond
+      codeTimerSeconds: initCodeTimeSecond,
+      flag: false,
+      loginFlag: false
     }
   },
   methods: {
@@ -83,55 +88,54 @@ export default {
         this.initCode()
       })
     },
-    initCode () {
+    async initCode () {
+      this.flag = true
       const { mobile } = this.form
-      axios({
+      const res = await axios({
         method: 'GET',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
-      }).then(res => {
-        const { data } = res.data
-        window.initGeetest({
-          gt: data.gt,
-          challenge: data.challenge,
-          offline: !data.success,
-          new_captcha: data.new_captcha,
-          product: 'bind' // 验证模式  弹出式
-        }, captchaObj => {
-          captchaObj.onReady(() => {
-            captchaObj.verify()// 弹出验证码内容框
-          }).onSuccess(() => {
-            const {
-              geetest_challenge: challenge,
-              geetest_seccode: seccode,
-              geetest_validate: validate
-            } = captchaObj.getValidate()
-            axios({
-              method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
-              params: {
-                challenge,
-                validate,
-                seccode
-              }
-            }).then(res => {
-              // 成功发送短信，执行倒计时
-              this.countDown()
-            })
-            console.log('成功发送短信')
-          }).onError(() => {
-            console.log('发送短信出错了')
-          })
+      })
+      const { data } = res.data
+      const captchaObj = await initGeetest({
+        gt: data.gt,
+        challenge: data.challenge,
+        offline: !data.success,
+        new_captcha: data.new_captcha,
+        product: 'bind' // 验证模式  弹出式
+      })
+
+      captchaObj.onReady(() => {
+        captchaObj.verify()// 弹出验证码内容框
+        this.flag = false
+      }).onSuccess(async () => {
+        const {
+          geetest_challenge: challenge,
+          geetest_seccode: seccode,
+          geetest_validate: validate
+        } = captchaObj.getValidate()
+        await axios({
+          method: 'GET',
+          url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+          params: {
+            challenge,
+            validate,
+            seccode
+          }
         })
+        // 成功发送短信，执行倒计时
+        this.countDown()
       })
     },
     // 倒计时
     countDown () {
+      this.flag = true
       this.codeTimer = setInterval(() => {
         this.codeTimerSeconds--
         if (this.codeTimerSeconds <= 0) {
           window.clearInterval(this.codeTimer)
           this.codeTimerSeconds = initCodeTimeSecond
           this.codeTimer = null
+          this.flag = false
         }
       }, 1000)
     },
@@ -141,34 +145,36 @@ export default {
           return null
         }
         // 表单验证通过，提交登录请求
+        this.loginFlag = true
         this.submitLogin()
       })
     },
-    submitLogin () {
-      axios({
-        method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-        data: {
-          mobile: this.form.mobile,
-          code: this.form.code
-        }
-      })
-        .then(res => {
-          // 登录成功  200<= 的状态会进入这里 <=400
-          const userInfo = res.data.data
-          window.localStorage.setItem('user_info', JSON.stringify(userInfo))
-          this.$message({
-            message: '登录成功',
-            type: 'success'
-          })
-          this.$router.push({
-            name: 'home'
-          })
+    async submitLogin () {
+      try {
+        const res = await axios({
+          method: 'POST',
+          // url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+          url: 'http://toutiao.course.itcast.cn/mp/v1_0/authorizations',
+          data: {
+            mobile: this.form.mobile,
+            code: this.form.code
+          }
         })
-        .catch(() => {
-          // >=400 的状态会进入这里
-          this.$message.error('登录失败，手机号或验证码错误！')
+        // 登录成功  200<= 的状态会进入这里 <=400
+        const userInfo = res.data.data
+        saveUser(userInfo)
+        this.$message({
+          message: '登录成功',
+          type: 'success'
         })
+        this.$router.push({
+          name: 'home'
+        })
+      } catch (error) {
+        // >=400 的状态会进入这里
+        this.loginFlag = false
+        this.$message.error('登录失败，手机号或验证码错误！')
+      }
     }
   }
 }
@@ -176,7 +182,7 @@ export default {
 <style lang="less" scoped>
 .login {
   height: 100%;
-  background: url(./login_bg.jpg) no-repeat;
+  background: url(./login_bg.jpg) no-repeat center center;
   background-size: cover;
   .form-wrap {
     position: absolute;
