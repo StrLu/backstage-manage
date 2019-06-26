@@ -35,7 +35,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import '@/vendor/gt.js'
 import { saveUser } from '@/utils/auth'
 import initGeetest from '@/utils/initGeetest'
@@ -91,9 +90,9 @@ export default {
     async initCode () {
       this.flag = true
       const { mobile } = this.form
-      const res = await axios({
+      const res = await this.$http({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+        url: `/captchas/${mobile}`
       })
       const { data } = res.data
       const captchaObj = await initGeetest({
@@ -113,9 +112,9 @@ export default {
           geetest_seccode: seccode,
           geetest_validate: validate
         } = captchaObj.getValidate()
-        await axios({
+        await this.$http({
           method: 'GET',
-          url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+          url: `hsms/codes/${mobile}`,
           params: {
             challenge,
             validate,
@@ -151,10 +150,10 @@ export default {
     },
     async submitLogin () {
       try {
-        const res = await axios({
+        const res = await this.$http({
           method: 'POST',
           // url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-          url: 'http://toutiao.course.itcast.cn/mp/v1_0/authorizations',
+          url: '/authorizations',
           data: {
             mobile: this.form.mobile,
             code: this.form.code
