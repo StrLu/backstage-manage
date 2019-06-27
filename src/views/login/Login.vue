@@ -35,7 +35,6 @@
   </div>
 </template>
 <script>
-import '@/vendor/gt.js'
 import { saveUser } from '@/utils/auth'
 import initGeetest from '@/utils/initGeetest'
 
@@ -90,11 +89,10 @@ export default {
     async initCode () {
       this.flag = true
       const { mobile } = this.form
-      const res = await this.$http({
+      const data = await this.$http({
         method: 'GET',
         url: `/captchas/${mobile}`
       })
-      const { data } = res.data
       const captchaObj = await initGeetest({
         gt: data.gt,
         challenge: data.challenge,
@@ -102,7 +100,6 @@ export default {
         new_captcha: data.new_captcha,
         product: 'bind' // 验证模式  弹出式
       })
-
       captchaObj.onReady(() => {
         captchaObj.verify()// 弹出验证码内容框
         this.flag = false
@@ -150,7 +147,7 @@ export default {
     },
     async submitLogin () {
       try {
-        const res = await this.$http({
+        const userInfo = await this.$http({
           method: 'POST',
           // url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
           url: '/authorizations',
@@ -160,7 +157,6 @@ export default {
           }
         })
         // 登录成功  200<= 的状态会进入这里 <=400
-        const userInfo = res.data.data
         saveUser(userInfo)
         this.$message({
           message: '登录成功',
