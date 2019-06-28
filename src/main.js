@@ -4,7 +4,7 @@ import router from './router'
 import ElementUi from 'element-ui'
 import axios from 'axios'
 import { getUser, removeUser } from '@/utils/auth'
-
+import JSONbig from 'json-bigint'
 import 'nprogress/nprogress.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.css'
@@ -54,6 +54,21 @@ axios.interceptors.response.use(response => {
   }
   return Promise.reject(error)
 })
+
+/*
+axios 预留的自定义处理后端返回的原始数据
+data 是后端返回到未经处理的原始数据
+axios 默认使用JSON.parse处理数据,超过安全整数范围的数字就会出问题
+*/
+
+axios.defaults.transformResponse = [function (data) {
+  try {
+    return JSONbig.parse(data)
+  } catch (error) {
+    // 报错说明不是json数据,返回直接使用
+    return data
+  }
+}]
 
 Vue.prototype.$http = axios
 

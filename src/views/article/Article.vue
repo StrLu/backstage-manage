@@ -81,9 +81,9 @@
         </el-table-column>
         <el-table-column prop="pubdate" label="发布时间" max-width="220"></el-table-column>
         <el-table-column label="操作" width="171">
-          <template>
-            <el-button type="primary" plain>修改</el-button>
-            <el-button type="danger" plain>删除</el-button>
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" plain>修改</el-button>
+            <el-button size="mini" type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -150,6 +150,35 @@ export default {
     this.loadChannels()
   },
   methods: {
+    async handleDelete (item) {
+      try {
+        await this.$confirm('确定删除该文件? 删除不可恢复!', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await this.$http({
+          method: 'DELETE',
+          url: `/articles/${item.id}`
+        })
+        this.$message({
+          type: 'info',
+          message: '删除成功!'
+        })
+        this.loadArticle()
+      } catch (error) {
+        if (error === 'cancel') {
+          return this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        }
+        this.$message({
+          type: 'info',
+          message: '删除失败'
+        })
+      }
+    },
     async loadChannels () {
       try {
         const data = await this.$http({
