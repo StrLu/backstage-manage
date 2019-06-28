@@ -29,7 +29,9 @@
         </el-form-item>
         <el-form-item label="时间">
           <el-date-picker
-            v-model="filterParams.begin_pubdate"
+            value-format="yyyy-MM-dd"
+            v-model="range_date"
+            @change="handleDateChange"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -129,6 +131,7 @@ export default {
       pageSize: 10,
       totalCount: 0,
       channels: [],
+      range_date: '',
       filterParams: {
         status: '', // 文章状态
         channel_id: '', // 频道id
@@ -171,6 +174,10 @@ export default {
     handleCurrentChange (page) {
       this.page = page
       this.loadArticle()
+    },
+    handleDateChange (value) {
+      this.filterParams.begin_pubdate = value[0]
+      this.filterParams.end_pubdate = value[1]
     }
   }
 }
