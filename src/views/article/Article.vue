@@ -39,7 +39,11 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button
+          type="primary"
+          @click="handleFilter"
+          :loading="articleLoading"
+          >查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -48,7 +52,7 @@
     <!-- 文章列表 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>一共有xxx条数据</span>
+        <span>一共有<strong> {{ totalCount }} </strong>条数据</span>
         <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <el-table
@@ -88,6 +92,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
+        :current-page="page"
         :total="totalCount"
         :page-size="pageSize"
         :disabled="articleLoading"
@@ -156,15 +161,26 @@ export default {
         this.$message.error('获取频道数据失败!')
       }
     },
-    onSubmit () { },
+    handleFilter () {
+      this.page = 1
+      this.loadArticle()
+    },
     async loadArticle () {
       this.articleLoading = true
+      const filterData = {}
+      for (let key in this.filterParams) {
+        const item = this.filterParams[key]
+        if (item !== null && item !== undefined && item !== '') {
+          filterData[key] = item
+        }
+      }
       const data = await this.$http({
         method: 'GET',
         url: '/articles',
         params: {
           page: this.page,
-          per_page: this.pageSize
+          per_page: this.pageSize,
+          ...filterData
         }
       })
       this.articles = data.results
