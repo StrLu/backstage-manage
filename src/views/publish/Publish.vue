@@ -3,30 +3,28 @@
     <div slot="header" class="header">
       <span>发布文章</span>
       <div>
-        <el-button type="success">发布</el-button>
-        <el-button type="primary">存入草稿</el-button>
+        <el-button type="success" @click="handlePublish(false)">发布</el-button>
+        <el-button type="primary" @click="handlePublish(true)">存入草稿</el-button>
       </div>
     </div>
     <el-row>
       <el-col :span="23">
         <!-- 表单 -->
         <el-form ref="form" label-width="60px">
-          <el-form-item v-model="articleForm.title" label="标题">
-            <el-input></el-input>
+          <el-form-item label="标题">
+            <el-input v-model="articleForm.title"></el-input>
           </el-form-item>
           <el-form-item label="内容">
-            <el-input v-model="articleForm.content" type="textarea" ></el-input>
+            <el-input v-model="articleForm.content" type="textarea"></el-input>
           </el-form-item>
           <el-form-item label="封面">
-            <el-radio-group>
+            <!-- <el-radio-group>
               <el-radio label="线上品牌商赞助"></el-radio>
               <el-radio label="线下场地免费"></el-radio>
-            </el-radio-group>
+            </el-radio-group>-->
           </el-form-item>
           <el-form-item label="频道">
-            <el-select v-model="articleForm.channel_id" placeholder="请选择频道">
-              <el-option label="区域一" value="shanghai"></el-option>>
-            </el-select>
+            <article-channel v-model="articleForm.channel_id"></article-channel>
           </el-form-item>
         </el-form>
         <!-- /表单 -->
@@ -36,7 +34,12 @@
 </template>
 
 <script>
+import ArticleChannel from '@/components/article-channel/articleChannel.vue'
 export default {
+  components: {
+    ArticleChannel
+  },
+  name: 'publish',
   data () {
     return {
       articleForm: {
@@ -44,9 +47,30 @@ export default {
         content: '', // 内容
         channel_id: '', // 频道
         cover: {
-          type: 0, // 封面类型 -1:自动, 0:无图, 1:1张图, 3:3张图
+          type: '0', // 封面类型 -1:自动, 0:无图, 1:1张图, 3:3张图
           images: []
         }
+      },
+      radio: '0'
+    }
+  },
+  methods: {
+    async handlePublish (draft) {
+      try {
+        await this.$http({
+          method: 'POST',
+          url: '/articles',
+          data: this.articleForm,
+          params: {
+            draft
+          }
+        })
+        this.$message({
+          type: 'info',
+          message: '发布成功'
+        })
+      } catch (error) {
+        this.$message.error('发布失败', error)
       }
     }
   }

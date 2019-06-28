@@ -18,14 +18,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="filterParams.channel_id" placeholder="请选择活动区域">
-            <el-option
-            v-for="item in channels"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-            </el-option>
-          </el-select>
+          <article-channel v-model="filterParams.channel_id"></article-channel>
         </el-form-item>
         <el-form-item label="时间">
           <el-date-picker
@@ -105,7 +98,12 @@
 </template>
 
 <script>
+import ArticleChannel from '@/components/article-channel/articleChannel.vue'
 export default {
+  name: 'ArticleList',
+  components: {
+    ArticleChannel
+  },
   data () {
     return {
       articles: [],
@@ -135,7 +133,6 @@ export default {
       page: 1,
       pageSize: 10,
       totalCount: 0,
-      channels: [],
       range_date: '',
       filterParams: {
         status: '', // 文章状态
@@ -147,7 +144,6 @@ export default {
   },
   created () {
     this.loadArticle()
-    this.loadChannels()
   },
   methods: {
     async handleDelete (item) {
@@ -177,17 +173,6 @@ export default {
           type: 'info',
           message: '删除失败'
         })
-      }
-    },
-    async loadChannels () {
-      try {
-        const data = await this.$http({
-          method: 'GET',
-          url: '/channels'
-        })
-        this.channels = data.channels
-      } catch {
-        this.$message.error('获取频道数据失败!')
       }
     },
     handleFilter () {

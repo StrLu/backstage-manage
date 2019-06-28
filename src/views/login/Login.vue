@@ -31,7 +31,6 @@
         <el-form-item>
           <el-button
             class="loginbtn"
-            :disabled="loginFlag"
             type="primary"
             @click="handleLogin"
             :loading="loginLoading"
@@ -48,6 +47,7 @@ import initGeetest from '@/utils/initGeetest'
 const initCodeTimeSecond = 60
 
 export default {
+  name: 'Login',
   data () {
     return {
       form: {
@@ -120,7 +120,7 @@ export default {
             } = captchaObj.getValidate()
             await this.$http({
               method: 'GET',
-              url: `hsms/codes/${mobile}`,
+              url: `sms/codes/${mobile}`,
               params: {
                 challenge,
                 validate,
@@ -141,14 +141,12 @@ export default {
     },
     // 倒计时
     countDown () {
-      this.flag = true
       this.codeTimer = setInterval(() => {
         this.codeTimerSeconds--
         if (this.codeTimerSeconds <= 0) {
           window.clearInterval(this.codeTimer)
           this.codeTimerSeconds = initCodeTimeSecond
           this.codeTimer = null
-          this.flag = false
         }
       }, 1000)
     },

@@ -23,6 +23,7 @@
 <script>
 import { getUser, removeUser } from '@/utils/auth'
 export default {
+  name: 'AppHeader',
   data () {
     return {
       userinfo: {}
