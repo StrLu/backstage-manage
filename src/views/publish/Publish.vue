@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      defaultArticleForm: {},
+      initArticleForm: {},
       articleForm: {
         title: '', // 标题
         content: '', // 内容
@@ -60,7 +60,7 @@ export default {
     }
   },
   created () {
-    this.defaultArticleForm = JSON.parse(JSON.stringify(this.articleForm))
+    this.initArticleForm = JSON.parse(JSON.stringify(this.articleForm))
     if (this.$route.name === 'publish-edit') {
       this.loadArticle()
     }
@@ -106,7 +106,7 @@ export default {
           },
           data: this.articleForm
         })
-        this.articleForm = JSON.parse(JSON.stringify(this.defaultArticleForm))
+        this.articleForm = JSON.parse(JSON.stringify(this.initArticleForm))
         this.$message({
           type: 'success',
           message: '发布成功'
@@ -125,7 +125,7 @@ export default {
           },
           data: this.articleForm
         })
-        this.articleForm = JSON.parse(JSON.stringify(this.defaultArticleForm))
+        this.articleForm = JSON.parse(JSON.stringify(this.initArticleForm))
         this.$message({
           type: 'success',
           message: '修改成功'

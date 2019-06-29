@@ -28,7 +28,7 @@
       </template>
       <el-menu-item index="/publish">发布文章</el-menu-item>
       <el-menu-item index="/article">内容列表</el-menu-item>
-      <el-menu-item index="2-3">评论管理</el-menu-item>
+      <el-menu-item index="/comment">评论管理</el-menu-item>
       <el-menu-item index="2-4">素材管理</el-menu-item>
     </el-submenu>
     <el-submenu index="3">
@@ -40,7 +40,7 @@
       <el-menu-item index="3-2">粉丝概况</el-menu-item>
       <el-menu-item index="3-3">粉丝列表</el-menu-item>
     </el-submenu>
-    <el-menu-item index="/artilce">
+    <el-menu-item index="/account">
       <i class="el-icon-s-custom"></i>
       <span slot="title">账户管理</span>
     </el-menu-item>

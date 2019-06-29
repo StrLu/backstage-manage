@@ -35,6 +35,16 @@ const router = new Router({
           name: 'fans',
           path: '/fans',
           component: () => import('@/views/fans/fans.vue')
+        },
+        {
+          name: 'comment',
+          path: '/comment',
+          component: () => import('@/views/comment/comment.vue')
+        },
+        {
+          name: 'account',
+          path: '/account',
+          component: () => import('@/views/account/account.vue')
         }
       ]
     },
