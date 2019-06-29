@@ -75,7 +75,7 @@
         <el-table-column prop="pubdate" label="发布时间" max-width="220"></el-table-column>
         <el-table-column label="操作" width="171">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" plain>修改</el-button>
+            <el-button size="mini" type="primary" plain @click="handleUpdate(scope.row.id)">修改</el-button>
             <el-button size="mini" type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -208,6 +208,9 @@ export default {
     handleDateChange (value) {
       this.filterParams.begin_pubdate = value[0]
       this.filterParams.end_pubdate = value[1]
+    },
+    handleUpdate (id) {
+      this.$router.push(`/publish/${id}`)
     }
   }
 }

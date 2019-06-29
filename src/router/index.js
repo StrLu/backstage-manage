@@ -22,9 +22,19 @@ const router = new Router({
           component: () => import('@/views/publish/Publish.vue')
         },
         {
+          name: 'publish-edit',
+          path: '/publish/:id',
+          component: () => import('@/views/publish/Publish.vue')
+        },
+        {
           name: 'article',
           path: '/article',
           component: () => import('@/views/article/Article.vue')
+        },
+        {
+          name: 'fans',
+          path: '/fans',
+          component: () => import('@/views/fans/fans.vue')
         }
       ]
     },
