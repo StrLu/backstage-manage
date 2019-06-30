@@ -71,6 +71,7 @@ export default {
           url: '/user/profile'
         })
         this.user = data
+        this.user.id = this.user.id.toString() // 处理id过长被处理对象,使用的标签报错问题
       } catch (error) {
         this.$message.error('加载用户信息失败', error)
       }
