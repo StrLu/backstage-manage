@@ -2,18 +2,17 @@
   <el-row :gutter="20">
     <el-col :span="17">江苏传智播客教育科技股份有限公司</el-col>
     <el-col :span="6">
-      <el-dropdown trigger="click">
+      <el-dropdown trigger="click" @command="handleCommand">
         <a class="userInfo" href="javascript:">
-          <img width="30" :src="$store.state.user.photo" />
+          <img :src="$store.state.user.photo" />
           <span class="el-dropdown-link">
             {{ $store.state.user.name }}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         </a>
-
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>用户设置</el-dropdown-item>
-          <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
+          <el-dropdown-item command="userSet">用户设置</el-dropdown-item>
+          <el-dropdown-item command="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -33,6 +32,13 @@ export default {
     // this.userinfo = getUser()
   },
   methods: {
+    handleCommand (command) {
+      if (command === 'logout') {
+        this.logout()
+      } else if (command === 'userSet') {
+        this.$router.push('/account')
+      }
+    },
     logout () {
       this.$confirm('确认退出登录？, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -71,6 +77,9 @@ export default {
   color: #666;
 }
 img {
+  width: 40px;
+  height: 40px;
   vertical-align: middle;
+  border-radius: 40px;
 }
 </style>

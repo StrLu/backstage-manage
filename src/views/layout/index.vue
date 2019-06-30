@@ -2,12 +2,12 @@
   <el-container>
     <el-aside width="220px">
       <!-- 侧边栏 -->
-      <AppAside/>
+      <AppAside />
     </el-aside>
     <el-container>
       <!-- 头部 -->
       <el-header>
-        <AppHeader/>
+        <AppHeader />
       </el-header>
       <!-- 内容 -->
       <el-main>
@@ -42,6 +42,13 @@ export default {
 }
 .el-aside::-webkit-scrollbar {
   width: 0;
+}
+.el-main,
+.el-header {
+  min-width: 1000px;
+}
+.el-main::-webkit-scrollbar {
+  height: 0;
 }
 .el-header {
   background-color: #f3f3f4;
