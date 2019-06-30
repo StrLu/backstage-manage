@@ -78,7 +78,7 @@ export default {
     async handleUpdateUser () {
       try {
         const { name, intro, email } = this.user
-        await this.$http({
+        const data = await this.$http({
           method: 'PATCH',
           url: '/user/profile',
           data: {
@@ -87,6 +87,7 @@ export default {
             email
           }
         })
+        this.$store.commit('changeUser', data)
         this.$message.success('修改成功!')
       } catch (error) {
         this.$message.error('操作失败!')
@@ -102,6 +103,7 @@ export default {
           data: formData
         })
         this.user.photo = data.photo
+        this.$store.commit('changeUser', this.user)
         this.$message.success('头像修改成功!')
       } catch (error) {
         this.$message.error('头像上传失败,请重试!')

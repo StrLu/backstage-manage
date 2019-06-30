@@ -4,9 +4,9 @@
     <el-col :span="6">
       <el-dropdown trigger="click">
         <a class="userInfo" href="javascript:">
-          <img width="30" src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi">
+          <img width="30" :src="$store.state.user.photo" />
           <span class="el-dropdown-link">
-            {{ userinfo.name }}
+            {{ $store.state.user.name }}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         </a>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getUser, removeUser } from '@/utils/auth'
+import { removeUser } from '@/utils/auth'
 export default {
   name: 'AppHeader',
   data () {
@@ -30,7 +30,7 @@ export default {
     }
   },
   created () {
-    this.userinfo = getUser()
+    // this.userinfo = getUser()
   },
   methods: {
     logout () {

@@ -5,6 +5,7 @@ import ElementUi from 'element-ui'
 import axios from 'axios'
 import { getUser, removeUser } from '@/utils/auth'
 import JSONbig from 'json-bigint'
+import store from '@/store/store.js'
 import 'nprogress/nprogress.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.css'
@@ -76,5 +77,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store, // 将store 配置到vue根实例中,所有组件都可以通过this.$store来访问容器中的数据
   render: h => h(App)
 }).$mount('#app')
