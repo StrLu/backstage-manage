@@ -10,15 +10,21 @@
       </el-radio-group>
       <el-button style="float: right" type="primary">上传图片</el-button>
     </div>
-    <el-row >
-      <el-col :span="4" v-for="(o, index) in 3" :key="o" :offset="index % 5 == 0 ? 0 : 1">
+    <el-row :gutter="20">
+      <el-col
+        :span="4"
+        v-for="(item, index) in images"
+        :key="item.id"
+        :offset="index % 5 == 0 ? 0 : 1"
+      >
         <el-card class="mediashow" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
+          <img :src="item.url" class="image" />
           <div class="bottom">
-            <el-button class="collection" type="text" icon="el-icon-star-off"></el-button>
+            <el-button
+              class="collection"
+              type="text"
+              :icon="item.is_collected ? 'el-icon-star-on' : 'el-icon-star-off'"
+            ></el-button>
             <el-button class="collection" type="text" icon="el-icon-delete"></el-button>
           </div>
         </el-card>
@@ -31,7 +37,29 @@
 export default {
   data () {
     return {
-      radio1: '全部'
+      radio1: '全部',
+      images: []
+    }
+  },
+  created () {
+    this.loadImages()
+  },
+  methods: {
+    async loadImages (collect = false) {
+      try {
+        const data = await this.$http({
+          method: 'GET',
+          url: '/user/images',
+          params: {
+            collect,
+            page: 1,
+            per_page: 10
+          }
+        })
+        this.images = data.results
+      } catch (error) {
+        this.$message.error('获取图片出错!')
+      }
     }
   }
 }
